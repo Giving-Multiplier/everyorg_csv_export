@@ -1,0 +1,19 @@
+{
+  "description": "Every.org donation CSV export",
+  "env": {
+    "ENV": {
+      "description": "Environment",
+      "value": "production"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "https://buildpack-registry.s3.amazonaws.com/buildpacks/heroku-community/chrome-for-testing.tgz"
+    },
+    {
+      "url": "heroku/ruby"
+    }
+  ],
+  "name": "EveryOrgSync",
+  "repository": "https://github.com/mordaroso/"
+}
