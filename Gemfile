@@ -12,3 +12,4 @@ gem "selenium-webdriver", ">= 4.11.0", require: false
 
 gem "rake", "~> 13.2"
 
+gem "httparty", "~> 0.22.0"
