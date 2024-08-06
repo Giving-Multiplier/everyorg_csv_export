@@ -11,6 +11,7 @@ class DownloadJob
 
   def perform(headless: true)
     @headless = headless
+    logger = Logger.new(STDOUT)
     setup
 
     puts DOWNLOAD_FOLDER
@@ -30,8 +31,7 @@ class DownloadJob
     sleep 2 # first fully load page
     puts 'Setting filters'
     browser.click_button('Filter', wait: 60)
-    browser.find(:css, "input[value='Error']").find(:xpath, './/..').click
-    browser.find(:css, "input[value='Expired']").find(:xpath, './/..').click
+    browser.find(:css, "input[value='Error,Expired']").find(:xpath, './/..').click
     browser.click_link('Download')
 
     # Downloading file
@@ -45,7 +45,7 @@ class DownloadJob
     puts 'Done'
   rescue Capybara::ElementNotFound => e
     raise e unless ENV.fetch('ENV', 'production') == 'development'
-
+    logger.error(e.message)
     logger.error(driver.logs.get(:browser))
     browser.save_and_open_page
   end
