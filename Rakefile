@@ -4,9 +4,22 @@ require 'dotenv/tasks'
 require './app/download_job'
 require './app/upload_job'
 
+def with_rescue(exceptions, retries: 5)
+  try = 0
+  begin
+    yield try
+  rescue *exceptions => exc
+    try += 1
+    try <= retries ? retry : raise
+  end
+end
+
 desc "Downloads file from every.org through headless Chrome"
 task download: :dotenv do
-  DownloadJob.new.perform
+  with_rescue([Capybara::ElementNotFound], retries: 2) do |try|
+    puts "Download file (attempt #{try + 1})"
+    DownloadJob.new.perform
+  end
 end
 
 desc "Uploads file to custom endpoint"

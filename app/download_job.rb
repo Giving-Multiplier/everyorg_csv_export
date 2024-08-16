@@ -14,7 +14,7 @@ class DownloadJob
     logger = Logger.new(STDOUT)
     setup
 
-    puts DOWNLOAD_FOLDER
+    puts "Download folder: #{DOWNLOAD_FOLDER}"
 
     # Login
     puts 'Logging into every.org'
