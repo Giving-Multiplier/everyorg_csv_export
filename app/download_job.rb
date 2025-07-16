@@ -22,7 +22,7 @@ class DownloadJob
     browser.fill_in 'Email', with: ENV.fetch('EVERY_ORG_LOGIN')
     browser.fill_in 'Password', with: ENV.fetch('EVERY_ORG_PASSWORD')
     browser.click_button('Log in with email')
-    browser.find('h1', text: 'Giving Multiplier Admin')
+    browser.click_link('Navigate to nonprofit admin page')
 
     # Setting filters
     puts 'Open donations page'
@@ -71,6 +71,12 @@ class DownloadJob
   end
 
   def setup
+    chromium_paths = [
+      '/opt/homebrew/bin/chromium',                         # Homebrew ARM64
+      '/Applications/Chromium.app/Contents/MacOS/Chromium', # Downloaded version
+      '/usr/local/bin/chromium'                             # Other installations
+    ]
+
     # Config
     Capybara.register_driver :chrome do |app|
       options = Selenium::WebDriver::Chrome::Options.new
@@ -80,6 +86,9 @@ class DownloadJob
       options.add_preference(:download, prompt_for_download: false, default_directory: DOWNLOAD_FOLDER)
       options.add_preference('plugins.plugins_disabled', ["Chrome PDF Viewer"])
 
+      chromium_binary = chromium_paths.find { |path| File.exist?(path) }
+      options.binary = chromium_binary if chromium_binary
+
       Capybara::Selenium::Driver.new(
         app,
         browser: :chrome,
@@ -88,9 +97,10 @@ class DownloadJob
     end
     Capybara.javascript_driver = :chrome
     Capybara.configure do |config|
-      config.default_max_wait_time = 10 # seconds
+      config.default_max_wait_time = 30 # seconds
       config.default_driver = :chrome
     end
+    Capybara.enable_aria_label = true
   end
 
   def browser
