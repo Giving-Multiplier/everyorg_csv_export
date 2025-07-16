@@ -72,6 +72,7 @@ class DownloadJob
 
   def setup
     chromium_paths = [
+      '/app/.chrome-for-testing/chrome-linux64/chrome',     # Heroku
       '/opt/homebrew/bin/chromium',                         # Homebrew ARM64
       '/Applications/Chromium.app/Contents/MacOS/Chromium', # Downloaded version
       '/usr/local/bin/chromium'                             # Other installations
