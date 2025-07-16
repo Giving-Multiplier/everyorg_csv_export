@@ -71,6 +71,8 @@ class DownloadJob
   end
 
   def setup
+    Capybara.reset_sessions!
+
     chromium_paths = [
       '/app/.chrome-for-testing/chrome-linux64/chrome',     # Heroku
       '/opt/homebrew/bin/chromium',                         # Homebrew ARM64
