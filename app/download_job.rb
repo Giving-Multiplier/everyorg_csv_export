@@ -55,7 +55,7 @@ class DownloadJob
     sleep 2 # first fully load page
 
     puts 'Setting filters'
-    browser.click_button('Filter', wait: 60)
+    browser.click_button('Payment info', wait: 60)
     browser.find(:css, "input[value='Error,Expired']").find(:xpath, './/..').click
     browser.click_link('Download')
 
