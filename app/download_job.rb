@@ -109,6 +109,9 @@ class DownloadJob
       options.add_argument('--disable-prompt-on-repost')
       options.add_argument('--disable-features=TranslateUI')
       options.add_argument('--disable-web-security')
+      options.add_argument('--disable-blink-features=AutomationControlled')
+      options.add_argument('--disable-extensions')
+      options.exclude_switches << 'enable-automation'
 
       # CRITICAL: Force completely fresh profile for each Rake retry
       options.add_argument("--user-data-dir=/tmp/chrome-#{Process.pid}-#{Time.now.to_i}")
@@ -143,6 +146,7 @@ class DownloadJob
     # Initialize browser and test session
     @browser = Capybara.current_session
     @browser.visit('about:blank')  # Quick test to ensure browser works
+    @browser.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
 
     puts "✓ Fresh session created with driver: #{@driver_name}"
   end
