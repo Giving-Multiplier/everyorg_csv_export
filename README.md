@@ -5,7 +5,7 @@ Ruby script that logs into every.org and download the every.org donation csv.
 
 ## Setup
 
-1. Install ruby 3.3
+1. Install ruby 3.4
 2. Install Chrome
 3. Run `bundle` to install ruby gems
 4. Setup env variables (see .env.examples)
