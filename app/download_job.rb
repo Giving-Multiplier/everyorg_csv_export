@@ -2,6 +2,7 @@
 require 'selenium-webdriver'
 require 'capybara'
 require 'securerandom'
+STDOUT.sync = true
 
 # Automation to login to every.org, download the CSV
 class DownloadJob
@@ -12,6 +13,7 @@ class DownloadJob
   def perform(headless: true)
     @headless = headless
     @logger = Logger.new(STDOUT)
+    @logger.level = Logger::INFO
 
     begin
       # Always start with completely fresh session
@@ -27,7 +29,6 @@ class DownloadJob
       download_donations_csv
 
       puts 'Done'
-
     rescue Capybara::ElementNotFound => e
       log_error_details(e)
       raise e
@@ -192,7 +193,6 @@ class DownloadJob
         @browser.driver.quit
         puts "✓ Browser driver quit successfully"
       end
-
     rescue => e
       puts "Warning during cleanup: #{e.message}"
     ensure
@@ -236,7 +236,7 @@ class DownloadJob
     begin
       if defined?(@browser) && @browser && @browser.driver
         @logger.error("Browser logs: #{driver.logs.get(:browser)}")
-        @browser.save_and_open_page
+        Capybara::Screenshot.screenshot_and_save_page
       end
     rescue => log_error
       @logger.error("Could not capture additional error details: #{log_error.message}")

@@ -14,12 +14,21 @@ GEM
       rack-test (>= 0.6.3)
       regexp_parser (>= 1.5, < 3.0)
       xpath (~> 3.2)
+    capybara-screenshot (1.0.26)
+      capybara (>= 1.0, < 4)
+      launchy
+    childprocess (5.1.0)
+      logger (~> 1.5)
     csv (3.3.5)
     dotenv (3.1.8)
     httparty (0.22.0)
       csv
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
+    launchy (3.1.1)
+      addressable (~> 2.8)
+      childprocess (~> 5.0)
+      logger (~> 1.6)
     logger (1.7.0)
     matrix (0.4.3)
     mini_mime (1.1.5)
@@ -72,6 +81,7 @@ PLATFORMS
 
 DEPENDENCIES
   capybara (>= 3.39)
+  capybara-screenshot
   dotenv (~> 3.1)
   httparty (~> 0.22.0)
   rake (~> 13.2)
