@@ -16,7 +16,7 @@ end
 
 desc "Downloads file from every.org through headless Chrome"
 task download: :dotenv do
-  with_rescue([Capybara::ElementNotFound], retries: 2) do |try|
+  with_rescue([Capybara::ElementNotFound], retries: ENV.fetch('RETRIES', 2).to_i) do |try|
     puts "Download file (attempt #{try + 1})"
     DownloadJob.new.perform(headless: ENV['HEADLESS'] != 'false')
   end

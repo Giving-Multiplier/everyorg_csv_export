@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require 'selenium-webdriver'
 require 'capybara'
+require 'capybara-screenshot'
 require 'securerandom'
 STDOUT.sync = true
 
@@ -229,8 +230,6 @@ class DownloadJob
   end
 
   def log_error_details(error)
-    return unless ENV.fetch('ENV', 'production') == 'development'
-
     @logger.error("Error: #{error.message}")
 
     begin
