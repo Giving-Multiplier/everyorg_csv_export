@@ -92,7 +92,7 @@ class DownloadJob
         options.add_argument('--headless=new')  # Use new headless mode
       end
 
-      options.add_argument('--user-agent=GivingMultiplierBot/1.0 (Automated CSV Export; +https://github.com/Giving-Multiplier/everyorg_csv_export)')
+      options.add_argument('--user-agent=GivingMultiplierBot/1.0')
 
       # Essential Heroku/stability options
       options.add_argument('--no-sandbox')
