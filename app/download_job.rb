@@ -54,19 +54,58 @@ class DownloadJob
     puts 'Open donations page'
     browser.visit "https://www.every.org/#{ENV.fetch('EVERY_ORG_PROJECT')}/admin/donations"
     browser.find("div[role='columnheader']", text: 'Created')
-    sleep 2 # first fully load page
+    wait_for_api_requests
 
     puts 'Setting filters'
     browser.click_button('Payment info', wait: 60)
     browser.find(:css, "input[value='Error,Expired']").find(:xpath, './/..').click
-    browser.click_link('Download')
+    sleep 2
+    wait_for_api_requests
 
     # Downloading file
+    browser.click_link('Download')
+
     puts 'Downloading file'
     result = wait_for_file(DOWNLOAD_FOLDER, 'donations-*.csv')
     raise 'File not downloaded correctly' unless result
 
     puts "✓ File downloaded: #{result}"
+  end
+
+  def wait_for_api_requests(api_pattern: 'api.www.every.org/api/nonprofits', wait_for_element: 'div[role="row"]', timeout: 30)
+    # Install fetch interceptor only once
+    already_installed = browser.evaluate_script('window.fetchInterceptorInstalled || false')
+
+    unless already_installed
+      browser.execute_script(<<~JS)
+        window.apiRequestsPending = 0;
+        window.fetchInterceptorInstalled = true;
+        const originalFetch = window.fetch;
+        window.fetch = function(...args) {
+          if (args[0]?.includes('#{api_pattern}')) {
+            window.apiRequestsPending++;
+          }
+          return originalFetch.apply(this, args).finally(() => {
+            if (args[0]?.includes('#{api_pattern}')) {
+              window.apiRequestsPending--;
+            }
+          });
+        };
+      JS
+      puts "✓ Fetch interceptor installed"
+    end
+
+    sleep 2 # Let initial requests start
+    browser.has_css?(wait_for_element, wait: timeout) if wait_for_element
+
+    # Wait for pending requests to complete
+    Timeout.timeout(timeout) do
+      sleep 1 until browser.evaluate_script('window.apiRequestsPending || 0') == 0
+    end
+
+    puts "✓ API requests completed"
+  rescue Timeout::Error
+    puts "⚠ Warning: Timeout waiting for API requests, continuing anyway"
   end
 
   def setup_fresh_session
